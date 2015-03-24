@@ -190,7 +190,7 @@ game.EnemyBaseEntity = me.Entity.extend({
 
 });
 
-game.EnemyBaseEntity = me.Entity.extend({
+game.EnemyCreep = me.Entity.extend({
     init: function(x, y, settings){
         this._super(me.Entity, 'init',[x, y, {
             image: "creep1",
@@ -214,8 +214,19 @@ game.EnemyBaseEntity = me.Entity.extend({
         
     },
     
-    update: function() {
+    update: function(delta) {
         
+        
+        this.body.vel.x -= this.body.accel.x * me.timer.tick;
+        
+        
+        this.body.update(delta);
+        
+
+        
+        this._super(me.Entity, "update", [delta]);
+        
+        return true;
     }  
 });
 
@@ -232,7 +243,7 @@ game.GameManager = Object.extend({
         
         if(Math.round(this.now/1000)%10 ===0 && (this.now - this.lastCreep >= 1000)){
             this.lastCreep = this.now;
-            var creep = me.pool.pull("EnemyCreep", 1000, 0, {});
+            var creepe = me.pool.pull("EnemyCreep", 1000, 0, {});
             me.game.world.addChild(creepe, 5);
         }
         
