@@ -139,7 +139,7 @@ game.PlayerBaseEntity = me.Entity.extend({
     },
     
     loseHealth: function(damage){
-        this.health = this.health = damage;
+        this.health = this.health - damage;
     },
     
     onCollision: function() {
@@ -227,7 +227,7 @@ game.EnemyCreep = me.Entity.extend({
         this.now = new Date().getTime();
         
         this.body.vel.x -= this.body.accel.x * me.timer.tick;
-        
+         
         me.collision.check(this, true, this.collideHandler.bind(this), true);
         
         
@@ -253,6 +253,7 @@ game.EnemyCreep = me.Entity.extend({
                 //makes the player base call its lose health function annd passes it
                 //a damage 1
                 response.b.loseHealth(1);
+                console.log(response.b.health);
             }
         }
     }
