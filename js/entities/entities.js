@@ -11,8 +11,8 @@ game.PlayerEntity = me.Entity.extend({
                 }
             }]);
         this.type = "PlayerEntity";
-        this.health = 20;
-        this.body.setVelocity(5, 20);
+        this.health = game.data.playerHealth;;
+        this.body.setVelocity(game.data.playerMoveSpeed, 20);
         //Keeps track of which direction your character is going
         this.facing = "right";
         this.now = new Date().getTime();
@@ -90,7 +90,7 @@ game.PlayerEntity = me.Entity.extend({
             var ydif = this.pos.y - response.b.pos.y;
             var xdif = this.pos.x - response.b.pos.x;
             
-            if(ydif<-40 && xdif<70 && xdif>-35){
+            if(ydif<-40 && xdif< 70 && xdif>-35){
               this.body.falling = false;
               this.body.vel.y = -1;
             }
@@ -102,10 +102,32 @@ game.PlayerEntity = me.Entity.extend({
               this.pos.x = this.pos.x +1;             
             }    
             
-            if(this.renderable.isCurrentAnimation("attack") && this.now-this.lastHit >= 1000){
+            if(this.renderable.isCurrentAnimation("attack") && this.now-this.lastHit >= game.data.playerAttackTimer){
                 console.log("tower Hit");
                 this.lastHit = this.now;
-                response.b.loseHealth();
+                response.b.loseHealth(gmae.data.playerAttack);
+            }
+        }else if(response.b.type==='EnemyCreep'){
+            var xdif = this.pos.x - response.b.pos.x;
+            var ydif = this.pos.y - response.b.pos.y;
+            
+            if (xdif>0){
+                this.pos.x = this.pos.x + 1;
+                if(this.facing==="left"){
+                    this.body.vel.x = 0;
+                }
+            }else{
+                this.pos.x = this.pos.x - 1;
+                if(this.facing==="right"){
+                    this.body.vel.x = 0;
+                }
+            }           
+            if(this.renderable.isCurrentAnimation("attack") && this.now-this.lastHit >= game.data.playerAttackTimer
+                   && (Math.abs(ydif) <=40) && 
+                   ((xdif>0) && this.facing==="left") || ((xdif<0) && this.facing==="right") 
+                   ){
+                this.lastHit = this.now;
+                response.b.loseHealth(game.data.playerAttack);
             }
         }
     }
@@ -230,7 +252,16 @@ game.EnemyCreep = me.Entity.extend({
         
     },
     
-    update: function(delta) {
+    loseHealth: function(damage){   
+        this.Health = this.health - damage;
+    },
+    
+    update: function(delta){
+        console.log(this.health);
+        if(this.health <= 0){
+            me.game.world.removeChild(this);
+        }
+        
         this.now = new Date().getTime();
         
         this.body.vel.x -= this.body.accel.x * me.timer.tick;
