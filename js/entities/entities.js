@@ -17,6 +17,8 @@ game.PlayerEntity = me.Entity.extend({
         this.facing = "right";
         this.now = new Date().getTime();
         this.lastHit = this.now;
+        this.dead = false; 
+        this.attack = game.data.playerAttack;
         this.lastAttack = new Date().getTime(); //Haven't used this
         me.game.viewport.follow(this.pos, me.game.viewport.AXIS.BOTH);
 
@@ -29,6 +31,11 @@ game.PlayerEntity = me.Entity.extend({
     
     update: function(delta) {
         this.now = new Date().getTime();
+        
+        if (this.health <= 0){
+            this.dead = true;
+        }
+        
         if(me.input.isKeyPressed("right")){
             //adds to the postion of my x by the velocity defined above in
             //setVelocity() and multiplying it by me.timer.tick.
@@ -52,7 +59,6 @@ game.PlayerEntity = me.Entity.extend({
         
         if(me.input.isKeyPressed("attack")) {
             if(!this.renderable.isCurrentAnimation("attack")) {
-                console.log(!this.renderable.isCurrentAnimation("attack"));
                 //Sets the current animation to attack and once that is over
                 //goes back to the idle animation
                 this.renderable.setCurrentAnimation("attack", "idle");
@@ -74,7 +80,7 @@ game.PlayerEntity = me.Entity.extend({
         //the change in time that has happened 
         this.body.update(delta);
 
-
+        //console.log(" Dead x " + this.body.pos.x + " y " + this.body.pos.y )
 
         this._super(me.Entity, "update", [delta]);
         return true;
@@ -82,7 +88,6 @@ game.PlayerEntity = me.Entity.extend({
     
     loseHealth: function(damage){
         this.health = this.health - damage;
-        console.log(this.health);
     },
     
     collideHandler: function(response) {
@@ -96,28 +101,27 @@ game.PlayerEntity = me.Entity.extend({
             }
             else if(xdif>-35 && this.facing==='right' && (xdif<0)){
               this.body.vel.x = 0;
-              this.pos.x = this.pos.x -1;
+              //this.pos.x = this.pos.x -1;
             }else if(xdif<70 && this.facing==='left' && xdif>0){
               this.body.vel.x = 0;
-              this.pos.x = this.pos.x +1;             
+              //this.pos.x = this.pos.x +1;             
             }    
             
-            if(this.renderable.isCurrentAnimation("attack") && this.now-this.lastHit >= game.data.playerAttackTimer){
-                console.log("tower Hit");
+            if(this.renderable.isCurrentAnimation("attack") && this.now-this.lastHit >= game.data.playerAttackTimer){              
                 this.lastHit = this.now;
-                response.b.loseHealth(gmae.data.playerAttack);
+                response.b.loseHealth(game.data.playerAttack);
             }
         }else if(response.b.type==='EnemyCreep'){
             var xdif = this.pos.x - response.b.pos.x;
             var ydif = this.pos.y - response.b.pos.y;
             
             if (xdif>0){
-                this.pos.x = this.pos.x + 1;
+                //this.pos.x = this.pos.x + 1;
                 if(this.facing==="left"){
                     this.body.vel.x = 0;
                 }
             }else{
-                this.pos.x = this.pos.x - 1;
+                //this.pos.x = this.pos.x - 1;
                 if(this.facing==="right"){
                     this.body.vel.x = 0;
                 }
@@ -127,6 +131,13 @@ game.PlayerEntity = me.Entity.extend({
                    ((xdif>0) && this.facing==="left") || ((xdif<0) && this.facing==="right") 
                    ){
                 this.lastHit = this.now;
+                //if the creeps health is less than our attack, execute code in if statement
+                if(response.b.health <= game.data.playerAttack){
+                    //adds one gold for a creep kill
+                    game.data.gold += 1;
+                    console.log("Current gold: " + game.data.gold);
+                }
+                
                 response.b.loseHealth(game.data.playerAttack);
             }
         }
@@ -234,7 +245,7 @@ game.EnemyCreep = me.Entity.extend({
                 return (new me.Rect(0, 0, 32, 64)).toPolygon();
             }
         }]);
-        this.health = 10;
+        this.health = game.data.enemyCreepHealth;
         this.alwaysUpdate = true;
         //this.attacking lets us know if the enemy is currently attacking
         this.attacking = false;
@@ -253,11 +264,10 @@ game.EnemyCreep = me.Entity.extend({
     },
     
     loseHealth: function(damage){   
-        this.Health = this.health - damage;
+        this.health = this.health - damage;
     },
     
     update: function(delta){
-        console.log(this.health);
         if(this.health <= 0){
             me.game.world.removeChild(this);
         }
@@ -290,9 +300,9 @@ game.EnemyCreep = me.Entity.extend({
                 this.lastHit = this.now;
                 //makes the player base call its lose health function annd passes it
                 //a damage 1
-                response.b.loseHealth(1);
+                response.b.loseHealth(game.data.enemyCreepAttack);
             }
-        }else if(response.b.type==='PlayerEntity'){
+        }else if (response.b.type==='PlayerEntity'){
             var xdif = this.pos.x - response.b.pos.x;
             
             this.attacking=true;
@@ -310,7 +320,7 @@ game.EnemyCreep = me.Entity.extend({
                 this.lastHit = this.now;
                 //makes the player base call its lose health function annd passes it
                 //a damage 1
-                response.b.loseHealth(1);
+                response.b.loseHealth(game.data.enemyCreepAttack);
             }
         }
     }
@@ -321,13 +331,23 @@ game.GameManager = Object.extend({
     init: function(x, y, settings){
         this.now = new Date().getTime();
         this.lastCreep = new Date().getTime();
-       
+        this.paused = false;
         this.alwaysUpdate = true;
     },
     
     update: function(){
         this.now = new Date().getTime();
         
+        if(game.data.player.dead){
+            me.game.world.removeChild(game.data.player);
+            me.state.current().resetPlayer(10, 0);
+        }
+        
+        if(Math.round(this.now/1000)%20 ===0 && (this.now - this.lastCreep >= 1000)){
+            game.data.gold += 1;
+            console.log("Current gold: " + game.data.gold)
+        }
+               
         if(Math.round(this.now/1000)%10 ===0 && (this.now - this.lastCreep >= 1000)){
             this.lastCreep = this.now;
             var creepe = me.pool.pull("EnemyCreep", 1000, 0, {});
@@ -337,3 +357,4 @@ game.GameManager = Object.extend({
         return true;
     }
 });
+

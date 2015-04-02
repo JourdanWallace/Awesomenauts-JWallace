@@ -5,6 +5,8 @@
         <group>
             <file>file:/C:/xampp/htdocs/Awesomenauts-JWallace/js/game.js</file>
             <file>file:/C:/xampp/htdocs/Awesomenauts-JWallace/js/resources.js</file>
+            <file>file:/C:/xampp/htdocs/Awesomenauts-JWallace/js/screens/title.js</file>
+            <file>file:/C:/xampp/htdocs/Awesomenauts-JWallace/data/img/title.png</file>
             <file>file:/C:/xampp/htdocs/Awesomenauts-JWallace/js/screens/play.js</file>
             <file>file:/C:/xampp/htdocs/Awesomenauts-JWallace/js/entities/entities.js</file>
         </group>
