@@ -41,7 +41,8 @@ game.PlayerEntity = me.Entity.extend({
     setFlags: function(){                
         //Keeps track of which direction your character is going
         this.facing = "right";     
-        this.dead = false;       
+        this.dead = false; 
+        this.attacking = false;
     },
     
     addAnimation: function(){
@@ -54,32 +55,12 @@ game.PlayerEntity = me.Entity.extend({
     update: function(delta) {
         this.now = new Date().getTime();
         
-        if (this.health <= 0){
-            this.dead = true;
-        }
+        this.dead = checkIfDead();
         
-        if(me.input.isKeyPressed("right")){
-            //adds to the postion of my x by the velocity defined above in
-            //setVelocity() and multiplying it by me.timer.tick.
-            //me.timer.tick makes the movement look smooth
-            this.body.vel.x += this.body.accel.x * me.timer.tick;    
-            this.facing = "right";
-            this.flipX(true);
-        }else if(me.input.isKeyPressed("left")){
-            this.facing = "left";
-            this.body.vel.x -=this.body.accel.x * me.timer.tick;
-            this.flipX(false);
-        }else{            
-            this.body.vel.x = 0;
-        }
+        this.checkKeyPressesAndMove();
+         
         
-        if(me.input.isKeyPressed("jump") && !this.body.jumping && !this.body.falling){
-            this.body.jumping = true;
-            this.body.vel.y -= this.body.accel.y * me.timer.tick;
-        }
-            
-        
-        if(me.input.isKeyPressed("attack")) {
+        if(this.attacking){
             if(!this.renderable.isCurrentAnimation("attack")) {
                 //Sets the current animation to attack and once that is over
                 //goes back to the idle animation
@@ -107,6 +88,53 @@ game.PlayerEntity = me.Entity.extend({
         this._super(me.Entity, "update", [delta]);
         return true;
     },
+    
+    checkIfDead: function(){
+         if (this.health <=0){
+            return true;
+         }
+         return false;
+    },
+    
+    checkKeyPressesAndMove: function(){
+        if(me.input.isKeyPressed("right")){
+            this.moveRight();
+        }else if(me.input.isKeyPressed("left")){
+            this.moveLeft();
+        }else{            
+            this.body.vel.x = 0;
+        }
+        
+        if(me.input.isKeyPressed("jump") && !this.body.jumping && !this.body.falling){
+            this.jump();
+        }
+        
+        this.attacking = me.input.isKeyPressed("attack");
+    },
+    
+    moveRight: function(){
+       //adds to the postion of my x by the velocity defined above in
+            //setVelocity() and multiplying it by me.timer.tick.
+            //me.timer.tick makes the movement look smooth
+            this.body.vel.x += this.body.accel.x * me.timer.tick;    
+            this.facing = "right";
+            this.flipX(true); 
+    },
+    
+    moveLeft: function(){
+        this.facing = "left";
+            this.body.vel.x -=this.body.accel.x * me.timer.tick;
+            this.flipX(false);
+    },
+    
+    jump: function(){
+      this.body.jumping = true;
+      this.body.vel.y -= this.body.accel.y * me.timer.tick;  
+    },
+    
+    setAnimation(){
+        
+    }
     
     loseHealth: function(damage){
         this.health = this.health - damage;
