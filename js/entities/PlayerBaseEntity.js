@@ -11,7 +11,7 @@ game.PlayerBaseEntity = me.Entity.extend({
             }
         }]);
         this.broken = false;
-        this.health = 10;
+        this.health = game.data.playerBaseHealth;
         this.alwaysUpdate = true;
         this.body.onCollision = this.onCollision.bind(this);
         this.type = "PlayerBase";
@@ -24,6 +24,7 @@ game.PlayerBaseEntity = me.Entity.extend({
     update: function(delta) {
         if (this.health <= 0) {
             this.broken = true;
+            game.data.win = false;
             this.renderable.setCurrentAnimation("broken");
         }
         this.body.update(delta);
