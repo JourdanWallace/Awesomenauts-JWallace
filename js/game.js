@@ -6,10 +6,10 @@ var game = {
 	data : {
 		// score
 		score : 0,
-                enemyBaseHealth:  1,
-                playerBaseHealth: 20,
+                enemyBaseHealth:  10,
+                playerBaseHealth: 10,
                 enemyCreepHealth: 10,
-                playerHealth: 10,
+                playerHealth: 100,
                 enemyCreepAttack: 1,
                 playerAttack: 1,
                 //orcBaseDamage: 10,
@@ -76,6 +76,7 @@ var game = {
                 me.pool.register("GameTimerManager", game.GameTimerManager);
                 me.pool.register("HeroDeathManager", game.HeroDeathManager);
                 me.pool.register("ExperienceManager", game.ExperienceManager);
+                me.pool.register("SpendGold", game.SpendGold);
             
 		me.state.set(me.state.MENU, new game.TitleScreen());
 		me.state.set(me.state.PLAY, new game.PlayScreen());
