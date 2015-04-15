@@ -6,8 +6,8 @@
             <file>file:/C:/xampp/htdocs/Awesomenauts-JWallace/js/entities/GameManager.js</file>
             <file>file:/C:/xampp/htdocs/Awesomenauts-JWallace/js/game.js</file>
             <file>file:/C:/xampp/htdocs/Awesomenauts-JWallace/js/screens/spendExp.js</file>
-            <file>file:/C:/xampp/htdocs/Awesomenauts-JWallace/js/resources.js</file>
-            <file>file:/C:/xampp/htdocs/Awesomenauts-JWallace/js/screens/play.js</file>
+            <file>file:/C:/xampp/htdocs/Awesomenauts-JWallace/js/entities/EnemyCreep.js</file>
+            <file>file:/C:/xampp/htdocs/Awesomenauts-JWallace/js/entities/entities.js</file>
         </group>
     </open-files>
 </project-private>
