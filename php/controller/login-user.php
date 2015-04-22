@@ -25,7 +25,7 @@
             $array["exp2"] = $row["exp2"];
             $array["exp3"] = $row["exp3"];
             $array["exp4"] = $row["exp4"];
-            //the user logged in successfully 
+            $_SESSION["name"] = $username;
             echo json_encode($array);          
         } else {
             //what's displayed if the username and password are wrong
