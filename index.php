@@ -103,7 +103,7 @@
                        url: "php/controller/create-user.php",
                        data: (
                            username: $('#username').val(),
-                           password: $('#password').vall()
+                           password: $('#password').val(),
                        ),
                        dataType: "text"
                     })
