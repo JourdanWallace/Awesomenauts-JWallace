@@ -25,13 +25,12 @@
                 <form id="input" method="post">
                     <div class="field">
                         <label for="username">Username</label>
-                        <input type='text' name='username' id='username' autocomplete='off'>
-                        
+                        <input type='text' name='username' id='username' autocomplete='off'>          
                     </div>
                     
                     <div class='password'>
                         <label for="password">Password</label>
-                        <input type='text' name='password' id='password'
+                        <input type='password' name='password' id='password'
                     </div>
                     
                     <button type='button' id='register'>Register</button>
@@ -59,6 +58,7 @@
                 <script type="text/javascript" src="js/gamemanagers/HeroDeathManager.js"></script>
                 <script type="text/javascript" src="js/entities/EnemyCreep.js"></script>
 		<script type="text/javascript" src="js/entities/HUD.js"></script>
+                <script type="text/javascript" src="js/entities/SpearThrow.js"></script>
 		<script type="text/javascript" src="js/screens/title.js"></script>
 		<script type="text/javascript" src="js/screens/play.js"></script>
                 <script type="text/javascript" src="js/screens/spendExp.js"></script>
@@ -102,7 +102,7 @@
                        url: "php/controller/create-user.php",
                        data: {
                            username: $('#username').val(),
-                           password: $('#password').val(),
+                           password: $('#password').val()
                        },
                        dataType: "text"
                     })
@@ -116,7 +116,34 @@
                     .fail(function(response){
                         alert("Fail");
                     });
-                });  
+                });
+                $("#load").bind("click", function(){
+                   $.ajax({
+                       type: "POST",
+                       url: "php/controller/login-user.php",
+                       data: {
+                           username: $('#username').val(),
+                           password: $('#password').val()
+                       },
+                       dataType: "text"
+                    })
+                    .success(function(response){
+                        if(response==="Invalid username and password"){
+                            alert(response);
+                        }else{
+                            var data = jQuery.parseJSON(response);
+                            game.data.exp = data["exp"];
+                            game.data.exp1 = data["exp1"];
+                            game.data.exp2 = data["exp2"];
+                            game.data.exp3 = data["exp3"];
+                            game.data.exp4 = data["exp4"];    
+                            me.state.change(me.state.SPENDEXP);
+                        }
+                    })
+                    .fail(function(response){
+                        alert("Fail");
+                    });
+                });
                 </script>
 	</body>
 </html>

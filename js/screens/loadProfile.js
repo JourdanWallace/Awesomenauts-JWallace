@@ -16,7 +16,7 @@ game.LoadProfile = me.ScreenObject.extend({
                 
                 me.game.world.addChild(new (me.Renderable.extend({
                     init: function(){
-                        this._super(me.Renderable, 'init', [10, 10, 300,50]);
+                        this._super(me.Renderable, 'init', [10, 10, 300, 50]);
                         this.font = new me.Font("Broadway", 26, "red");
                     },
                     
@@ -34,7 +34,7 @@ game.LoadProfile = me.ScreenObject.extend({
 	 *  action to perform when leaving this screen (state change)
 	 */
 	onDestroyEvent: function() {
-             document.getElementById("input").style.visibility = "visible";
-             document.getElementById("load").style.visibility = "visible";   
+             document.getElementById("input").style.visibility = "hidden";
+             document.getElementById("load").style.visibility = "hidden";   
 	}
 }); 
