@@ -21,7 +21,7 @@ game.SpearThrow = me.Entity.extend({
         if(this.facing === "left"){
             this.body.vel.x -= this.body.accel.x * me.timer.tick;
         }else{         
-            this.body.vel.x -= this.body.accel.x * me.timer.tick; 
+            this.body.vel.x += this.body.accel.x * me.timer.tick; 
         }
          
         me.collision.check(this, true, this.collideHandler.bind(this), true);
