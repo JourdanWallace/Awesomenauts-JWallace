@@ -50,7 +50,7 @@ game.TitleScreen = me.ScreenObject.extend({
                         me.state.change(me.state.LOAD);
                     }
                 }));
-                
+                me.game.world.addChild(game.data.option2);
         },
 	
 	
