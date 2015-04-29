@@ -7,7 +7,7 @@ game.PlayScreen = me.ScreenObject.extend({
 		game.data.score = 0;
                 me.levelDirector.loadLevel("level01");
             
-                this.resetPlayer(0, 420);
+                this.resetPlayer(10, 0);
                 
                 var gameTimerManager = me.pool.pull("GameTimerManager", 0, 0, {});
                 me.game.world.addChild(gameTimerManager, 0);
@@ -20,6 +20,9 @@ game.PlayScreen = me.ScreenObject.extend({
                 
                 var spendGold = me.pool.pull("SpendGold", 0, 0, {});
                 me.game.world.addChild(spendGold, 0);
+                
+                game.data.minimap = me.pool.pull("minimap", 10, 10, {});
+                me.game.world.addChild(game.data.minimap, 30);
                 
                 me.input.bindKey(me.input.KEY.B, "buy");
                 me.input.bindKey(me.input.KEY.Q, "skill1");
@@ -47,6 +50,9 @@ game.PlayScreen = me.ScreenObject.extend({
         resetPlayer: function(x, y){
             game.data.player = me.pool.pull("player", x, y, {});
             me.game.world.addChild(game.data.player, 5); 
+            game.data.miniPlayer = me.pool.pull("miniplayer", 10, 10, {});
+            me.game.world.addChild(game.data.miniPlayer, 31);
+            
         }
         
 });
