@@ -1,8 +1,11 @@
 game.SpearThrow = me.Entity.extend({
     init: function(x, y, settings, facing){
        this._super(me.Entity, 'init',[x, y, {
+            //the image
             image: "spear",
+            //the width of the image
             width: 48,
+            //the height of the image
             height:48,
             spritewidth: "48",
             spriteheight: 48,
@@ -11,9 +14,11 @@ game.SpearThrow = me.Entity.extend({
             }
         }]);
         this.alwaysUpdate = true;
+        //how fast the spear goes
         this.body.setVelocity(8, 0);
         this.attack = game.data.ability3*3;
         this.type = "spear";
+        //whichever way the player is facing determines which way the spear goes
         this.facing = facing
     },
     
@@ -33,7 +38,9 @@ game.SpearThrow = me.Entity.extend({
     },
     
      collideHandler: function(response){
+         //the creeps and base can both be attacked by the spear
         if(response.b.type==='EnemyBase' || response.b.type==='EnemyCreep'){
+            //if attacked, remove the base
            response.b.loseHealth(this.attack);
            me.game.world.removeChild(this);
         }

@@ -38,7 +38,7 @@ game.EnemyCreep = me.Entity.extend({
         }
         
         this.now = new Date().getTime();
-        
+        //the speed of the creep
         this.body.vel.x -= this.body.accel.x * me.timer.tick;
          
         me.collision.check(this, true, this.collideHandler.bind(this), true);

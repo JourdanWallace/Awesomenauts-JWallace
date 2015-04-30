@@ -99,12 +99,14 @@ game.PlayerEntity = me.Entity.extend({
     },
     
     moveLeft: function(){
+        //if the character is facing left, move left
         this.facing = "left";
             this.body.vel.x -= this.body.accel.x * me.timer.tick;
             this.flipX(false);
     },
     
     jump: function(){
+        //when the character jumps, he needs to come down
       this.body.jumping = true;
       this.body.vel.y -= this.body.accel.y * me.timer.tick;  
     },
@@ -124,6 +126,7 @@ game.PlayerEntity = me.Entity.extend({
         if((this.now-this.lastSpear) >= game.data.spearTimer*1000 && game.data.ability3 >= 0){
             this.lastSpear = this.now;
             var spear = me.pool.pull("spear", this.pos.x, this.pos.y, {}, this.facing);
+            //add spear when there is enough gold
             me.game.world.addChild(spear, 10);
         }
     },
@@ -141,15 +144,18 @@ game.PlayerEntity = me.Entity.extend({
             }
         }
         else if (this.body.vel.x !== 0 && !this.renderable.isCurrentAnimation("attack")){
+            ///if your not idle or attacking, your walking
             if (!this.renderable.isCurrentAnimation("walk")) {
                 this.renderable.setCurrentAnimation("walk");
             }
+            ///if your not attacking or walking, your idle
         }else if(!this.renderable.isCurrentAnimation("attack")){
             this.renderable.setCurrentAnimation("idle");
         }  
     },
     
     loseHealth: function(damage){
+        //when you lose health, your health is your health minus damage
         this.health = this.health - damage;
     },
     
